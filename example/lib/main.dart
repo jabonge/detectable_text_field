@@ -41,8 +41,8 @@ class MyHomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               DetectableText(
-                text: "Welcome to #Detectable @TextField",
-                detectionRegExp: hashTagAtSignRegExp,
+                text: "Welcome to \$Detectable @TextField",
+                detectionRegExp: cashTagAtSignUrlRegExp,
                 onTap: (tappedText) {
                   print(tappedText);
                 },
@@ -50,7 +50,7 @@ class MyHomePage extends StatelessWidget {
               const SizedBox(height: 32),
               DetectableTextField(
                 maxLines: null,
-                detectionRegExp: detectionRegExp(),
+                detectionRegExp: cashTagAtSignUrlRegExp,
                 onDetectionTyped: (text) {
                   print(text);
                 },
