@@ -21,6 +21,7 @@ class DetectableEditableText extends EditableText {
     @required this.detectionRegExp,
     @required Color cursorColor,
     @required this.onDetectionTyped,
+    @required this.onDetectionFinished,
     ValueChanged<String> onChanged,
     ValueChanged<String> onSubmitted,
     int maxLines,
@@ -131,6 +132,8 @@ class DetectableEditableText extends EditableText {
   final RegExp detectionRegExp;
 
   final ValueChanged<String> onDetectionTyped;
+
+  final VoidCallback onDetectionFinished;
 
   @override
   DetectableEditableTextState createState() => DetectableEditableTextState();
