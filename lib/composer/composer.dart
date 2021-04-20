@@ -1,4 +1,5 @@
 import 'package:detectable_text_field/detector/detector.dart' as detector;
+import 'package:detectable_text_field/detector/detector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -80,6 +81,20 @@ class Composer {
       },
     ).toList();
     return TextSpan(children: span);
+  }
+
+  Detection typingDetection() {
+    final res = detections.where(
+      (detection) =>
+          detection.style == detectedStyle &&
+          detection.range.start <= selection &&
+          detection.range.end >= selection,
+    );
+    if (res.isNotEmpty) {
+      return res.first;
+    } else {
+      return null;
+    }
   }
 
   void callOnDetectionTyped() {

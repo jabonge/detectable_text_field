@@ -147,6 +147,7 @@ class DetectableEditableTextState extends EditableTextState {
   DetectableEditableText get widget => super.widget;
 
   Detector detector;
+  Detection prevTypingDetection;
 
   @override
   void initState() {
@@ -162,6 +163,21 @@ class DetectableEditableTextState extends EditableTextState {
   TextSpan buildTextSpan() {
     final String sourceText = textEditingValue.text;
     final detections = detector.getDetections(sourceText);
+
+    final composing = textEditingValue.composing;
+    final composer = Composer(
+      selection: textEditingValue?.selection?.start ?? -1,
+      onDetectionTyped: widget.onDetectionTyped,
+      sourceText: sourceText,
+      detections: detections,
+      composing: composing,
+      detectedStyle: widget.detectedStyle,
+    );
+    final typingDetection = composer.typingDetection();
+    if (prevTypingDetection != null && typingDetection == null) {
+      widget.onDetectionFinished?.call();
+    }
+    prevTypingDetection = typingDetection;
     if (detections.isEmpty) {
       /// use same method as default textField to show composing underline
       return widget.controller.buildTextSpan(
@@ -171,15 +187,7 @@ class DetectableEditableTextState extends EditableTextState {
     } else {
       /// use [Composer] to show composing underline
       detections.sort();
-      final composing = textEditingValue.composing;
-      final composer = Composer(
-        selection: textEditingValue?.selection?.start ?? -1,
-        onDetectionTyped: widget.onDetectionTyped,
-        sourceText: sourceText,
-        detections: detections,
-        composing: composing,
-        detectedStyle: widget.detectedStyle,
-      );
+
       if (widget.onDetectionTyped != null) {
         composer.callOnDetectionTyped();
       }
