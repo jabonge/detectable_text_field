@@ -19,6 +19,9 @@ const urlRegexContent = "((http|https)://)(www.)?" +
     "{2,6}\\b([-a-zA-Z0-9@:%" +
     "._\\+~#?&//=]*)";
 
+const shortUrlRegexContent =
+    "([--:\\w?@%&+~#=]*\\.[a-z]{2,4}\\/{0,2})((?:[?&](?:\\w+)=(?:\\w+))+|[--:\\w?@%&+~#=]+)?";
+
 /// Regular expression to extract hashtag
 ///
 /// Supports English, Japanese, Korean, Spanish, Arabic, and Thai
@@ -29,12 +32,12 @@ final cashTagRegExp = RegExp(
 );
 
 final cashTaghashTagAtSignUrlRegExp = RegExp(
-  "(?!\\n)(?:^|\\s)([#@\$]([$detectionContentLetters]+))|$urlRegexContent",
+  "(?!\\n)(?:^|\\s)([#@\$]([$detectionContentLetters]+))|$shortUrlRegexContent",
   multiLine: true,
 );
 
 final cashTagAtSignUrlRegExp = RegExp(
-  "(?!\\n)(?:^|\\s)([@\$]([$detectionContentLetters]+))|$urlRegexContent",
+  "(?!\\n)(?:^|\\s)([@\$]([$detectionContentLetters]+))|$shortUrlRegexContent",
   multiLine: true,
 );
 
@@ -50,6 +53,11 @@ final atSignRegExp = RegExp(
 
 final urlRegex = RegExp(
   urlRegexContent,
+  multiLine: true,
+);
+
+final shortUrlRegex = RegExp(
+  shortUrlRegexContent,
   multiLine: true,
 );
 

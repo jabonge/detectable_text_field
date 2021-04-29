@@ -13,6 +13,7 @@ class DetectableText extends StatelessWidget {
     this.basicStyle,
     this.detectedStyle,
     this.onTap,
+    this.onTapRemaining,
     this.textAlign = TextAlign.start,
     this.textDirection,
     this.softWrap = true,
@@ -29,6 +30,7 @@ class DetectableText extends StatelessWidget {
   final TextStyle? basicStyle;
   final TextStyle? detectedStyle;
   final Function(String)? onTap;
+  final VoidCallback? onTapRemaining;
   final TextAlign textAlign;
   final TextDirection? textDirection;
   final bool softWrap;
@@ -51,7 +53,9 @@ class DetectableText extends StatelessWidget {
         decoratedStyle: dStyle,
         basicStyle: style,
         onTap: onTap,
+        onTapRemaining: onTapRemaining,
         source: text,
+        isUrlShorten: true,
         detectionRegExp: detectionRegExp,
       ),
       textAlign: textAlign,

@@ -1,3 +1,5 @@
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
+import 'package:detectable_text_field/functions.dart';
 import 'package:flutter/cupertino.dart';
 
 /// DataModel to explain the unit of word in decoration system
@@ -21,6 +23,8 @@ class Detector {
   final TextStyle textStyle;
   final TextStyle detectedStyle;
   final RegExp detectionRegExp;
+  final urlMap = Map<String, String>();
+  late String shortSource;
 
   Detector({
     required this.textStyle,
@@ -98,7 +102,18 @@ class Detector {
   }
 
   /// Return the list of decorations with tagged and untagged text
-  List<Detection> getDetections(String copiedText) {
+  List<Detection> getDetections(String copiedText,
+      {bool isUrlShorten = false}) {
+    if (isUrlShorten) {
+      copiedText = copiedText.replaceAllMapped(urlRegex, (match) {
+        final originalUrl = match[0]!;
+        var shortUrl = shortenUrl(originalUrl);
+        urlMap.addAll({shortUrl: originalUrl});
+        return shortUrl;
+      });
+    }
+    shortSource = copiedText;
+
     /// Text to change emoji into replacement text
     final fullWidthRegExp = RegExp(
         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])');
@@ -126,7 +141,6 @@ class Detector {
     }
 
     final sourceDetections = _getSourceDetections(tags, copiedText);
-
     final emojiFilteredResult = _getEmojiFilteredDetections(
         copiedText: copiedText,
         emojiMatches: emojiMatches,

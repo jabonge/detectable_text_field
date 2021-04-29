@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   detectable_text_field:
+    path: ../
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -34,9 +35,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-dependency_overrides:
-  detectable_text_field:
-    path: ../
+#dependency_overrides:
+#  detectable_text_field:
+#    path: ../
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -20,6 +20,22 @@ bool isDetected(String value, RegExp detectionRegExp) {
   return detections.isNotEmpty;
 }
 
+String shortenUrl(String originalUrl) {
+  final uri = Uri.tryParse(originalUrl);
+  if (uri != null) {
+    var shortenUrl = '${uri.host}${uri.path}${uri.query}';
+    if (shortenUrl.startsWith('www.')) {
+      shortenUrl = shortenUrl.substring(4);
+    }
+    if (shortenUrl.length > 27) {
+      shortenUrl = shortenUrl.substring(0, 27) + '...';
+    }
+    return shortenUrl;
+  } else {
+    return originalUrl;
+  }
+}
+
 /// Extract detections from the text
 List<String> extractDetections(String value, RegExp detectionRegExp) {
   final decoratedTextColor = Colors.blue;
@@ -48,41 +64,53 @@ TextSpan getDetectedTextSpan({
   required String source,
   required RegExp detectionRegExp,
   Function(String)? onTap,
+  VoidCallback? onTapRemaining,
+  bool isUrlShorten = false,
   bool decorateAtSign = false,
 }) {
-  final detections = Detector(
+  final detector = Detector(
     detectedStyle: decoratedStyle,
     textStyle: basicStyle,
     detectionRegExp: detectionRegExp,
-  ).getDetections(source);
-  if (detections.isEmpty) {
-    return TextSpan(text: source, style: basicStyle);
-  } else {
-    detections.sort();
-    final span = detections
-        .asMap()
-        .map(
-          (index, item) {
-            final recognizer = TapGestureRecognizer()
-              ..onTap = () {
-                final decoration = detections[index];
-                if (decoration.style == decoratedStyle) {
-                  onTap!(decoration.range.textInside(source).trim());
-                }
-              };
-            return MapEntry(
-              index,
-              TextSpan(
-                style: item.style,
-                text: item.range.textInside(source),
-                recognizer: (onTap == null) ? null : recognizer,
-              ),
-            );
-          },
-        )
-        .values
-        .toList();
+  );
+  final detections = detector.getDetections(source, isUrlShorten: isUrlShorten);
 
-    return TextSpan(children: span);
-  }
+  detections.sort();
+  final span = detections
+      .asMap()
+      .map(
+        (index, item) {
+          final onTapRecognizer = TapGestureRecognizer()
+            ..onTap = () {
+              final decoration = detections[index];
+              if (decoration.style == decoratedStyle) {
+                final text =
+                    decoration.range.textInside(detector.shortSource).trim();
+                if (detector.urlMap.containsKey(text)) {
+                  onTap!(detector.urlMap[text]!);
+                } else {
+                  onTap!(text);
+                }
+              } else {
+                if (onTapRemaining != null) {
+                  onTapRemaining();
+                }
+              }
+            };
+          return MapEntry(
+            index,
+            TextSpan(
+              style: item.style,
+              text: item.range.textInside(detector.shortSource),
+              recognizer: (onTap == null && onTapRemaining == null)
+                  ? null
+                  : onTapRecognizer,
+            ),
+          );
+        },
+      )
+      .values
+      .toList();
+
+  return TextSpan(children: span);
 }
