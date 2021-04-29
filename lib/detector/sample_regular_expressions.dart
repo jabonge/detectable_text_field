@@ -2,30 +2,16 @@
 ///
 /// Supports English, Japanese, Korean, Spanish, Arabic, and Thai
 
-const _symbols = '·・ー_';
+const _symbols = '·・ー_.';
 
 const _numbers = '0-9０-９';
 
 const _englishLetters = 'a-zA-Zａ-ｚＡ-Ｚ';
 
-const _japaneseLetters = 'ぁ-んァ-ン一-龠';
-
 const _koreanLetters = '\u1100-\u11FF\uAC00-\uD7A3';
 
-const _spanishLetters = 'áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ';
-
-const _arabicLetters = '\u0621-\u064A';
-
-const _thaiLetters = '\u0E00-\u0E7F';
-
-const detectionContentLetters = _symbols +
-    _numbers +
-    _englishLetters +
-    _japaneseLetters +
-    _koreanLetters +
-    _spanishLetters +
-    _arabicLetters +
-    _thaiLetters;
+const detectionContentLetters =
+    _symbols + _numbers + _englishLetters + _koreanLetters;
 
 const urlRegexContent = "((http|https)://)(www.)?" +
     "[a-zA-Z0-9@:%._\\+~#?&//=]" +
@@ -36,6 +22,22 @@ const urlRegexContent = "((http|https)://)(www.)?" +
 /// Regular expression to extract hashtag
 ///
 /// Supports English, Japanese, Korean, Spanish, Arabic, and Thai
+///
+final cashTagRegExp = RegExp(
+  "(?!\\n)(?:^|\\s)([\$]([$detectionContentLetters]+))",
+  multiLine: true,
+);
+
+final cashTaghashTagAtSignUrlRegExp = RegExp(
+  "(?!\\n)(?:^|\\s)([#@\$]([$detectionContentLetters]+))|$urlRegexContent",
+  multiLine: true,
+);
+
+final cashTagAtSignUrlRegExp = RegExp(
+  "(?!\\n)(?:^|\\s)([@\$]([$detectionContentLetters]+))|$urlRegexContent",
+  multiLine: true,
+);
+
 final hashTagRegExp = RegExp(
   "(?!\\n)(?:^|\\s)(#([$detectionContentLetters]+))",
   multiLine: true,
