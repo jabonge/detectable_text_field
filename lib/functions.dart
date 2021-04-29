@@ -74,43 +74,46 @@ TextSpan getDetectedTextSpan({
     detectionRegExp: detectionRegExp,
   );
   final detections = detector.getDetections(source, isUrlShorten: isUrlShorten);
-
-  detections.sort();
-  final span = detections
-      .asMap()
-      .map(
-        (index, item) {
-          final onTapRecognizer = TapGestureRecognizer()
-            ..onTap = () {
-              final decoration = detections[index];
-              if (decoration.style == decoratedStyle) {
-                final text =
-                    decoration.range.textInside(detector.shortSource).trim();
-                if (detector.urlMap.containsKey(text)) {
-                  onTap!(detector.urlMap[text]!);
+  if (detections.isEmpty) {
+    return TextSpan(text: source, style: basicStyle);
+  } else {
+    detections.sort();
+    final span = detections
+        .asMap()
+        .map(
+          (index, item) {
+            final onTapRecognizer = TapGestureRecognizer()
+              ..onTap = () {
+                final decoration = detections[index];
+                if (decoration.style == decoratedStyle) {
+                  final text =
+                      decoration.range.textInside(detector.shortSource).trim();
+                  if (detector.urlMap.containsKey(text)) {
+                    onTap!(detector.urlMap[text]!);
+                  } else {
+                    onTap!(text);
+                  }
                 } else {
-                  onTap!(text);
+                  if (onTapRemaining != null) {
+                    onTapRemaining();
+                  }
                 }
-              } else {
-                if (onTapRemaining != null) {
-                  onTapRemaining();
-                }
-              }
-            };
-          return MapEntry(
-            index,
-            TextSpan(
-              style: item.style,
-              text: item.range.textInside(detector.shortSource),
-              recognizer: (onTap == null && onTapRemaining == null)
-                  ? null
-                  : onTapRecognizer,
-            ),
-          );
-        },
-      )
-      .values
-      .toList();
+              };
+            return MapEntry(
+              index,
+              TextSpan(
+                style: item.style,
+                text: item.range.textInside(detector.shortSource),
+                recognizer: (onTap == null && onTapRemaining == null)
+                    ? null
+                    : onTapRecognizer,
+              ),
+            );
+          },
+        )
+        .values
+        .toList();
 
-  return TextSpan(children: span);
+    return TextSpan(children: span);
+  }
 }
