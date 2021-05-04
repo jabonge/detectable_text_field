@@ -1,3 +1,4 @@
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -55,6 +56,14 @@ List<String> extractDetections(String value, RegExp detectionRegExp) {
   return result;
 }
 
+String shortSource(String value) {
+  return value.replaceAllMapped(urlRegex, (match) {
+    final originalUrl = match[0]!;
+    var shortUrl = shortenUrl(originalUrl);
+    return shortUrl;
+  });
+}
+
 /// Returns textSpan with detected text
 ///
 /// Used in [DetectableText]
@@ -68,6 +77,7 @@ TextSpan getDetectedTextSpan({
   bool isUrlShorten = false,
   bool decorateAtSign = false,
 }) {
+  int urlIndex = 0;
   final detector = Detector(
     detectedStyle: decoratedStyle,
     textStyle: basicStyle,
@@ -88,8 +98,8 @@ TextSpan getDetectedTextSpan({
                 if (decoration.style == decoratedStyle) {
                   final text =
                       decoration.range.textInside(detector.shortSource).trim();
-                  if (detector.urlMap.containsKey(text)) {
-                    onTap!(detector.urlMap[text]!);
+                  if (shortUrlRegex.hasMatch(text)) {
+                    onTap!(detector.originalUrlList[urlIndex++]!);
                   } else {
                     onTap!(text);
                   }

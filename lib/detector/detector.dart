@@ -3,6 +3,7 @@ import 'package:detectable_text_field/functions.dart';
 import 'package:flutter/cupertino.dart';
 
 /// DataModel to explain the unit of word in decoration system
+
 class Detection extends Comparable<Detection> {
   Detection({required this.range, this.style, this.emojiStartPoint});
 
@@ -23,7 +24,7 @@ class Detector {
   final TextStyle textStyle;
   final TextStyle detectedStyle;
   final RegExp detectionRegExp;
-  final urlMap = Map<String, String>();
+  final originalUrlList = [];
   late String shortSource;
 
   Detector({
@@ -108,7 +109,7 @@ class Detector {
       copiedText = copiedText.replaceAllMapped(urlRegex, (match) {
         final originalUrl = match[0]!;
         var shortUrl = shortenUrl(originalUrl);
-        urlMap.addAll({shortUrl: originalUrl});
+        originalUrlList.add(originalUrl);
         return shortUrl;
       });
     }
