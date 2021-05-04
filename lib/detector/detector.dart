@@ -5,11 +5,16 @@ import 'package:flutter/cupertino.dart';
 /// DataModel to explain the unit of word in decoration system
 
 class Detection extends Comparable<Detection> {
-  Detection({required this.range, this.style, this.emojiStartPoint});
+  Detection(
+      {required this.range,
+      this.style,
+      this.emojiStartPoint,
+      this.originalUrl});
 
   final TextRange range;
   final TextStyle? style;
   final int? emojiStartPoint;
+  final String? originalUrl;
 
   @override
   int compareTo(Detection other) {
@@ -36,9 +41,14 @@ class Detector {
   List<Detection> _getSourceDetections(
       List<RegExpMatch> tags, String copiedText) {
     TextRange? previousItem;
+    int urlIndex = 0;
     final result = <Detection>[];
     for (var tag in tags) {
       ///Add undetected content
+      String? originalUrl;
+      if (tag.pattern == urlRegex.pattern) {
+        originalUrl = originalUrlList[urlIndex++];
+      }
       if (previousItem == null) {
         if (tag.start > 0) {
           result.add(Detection(
@@ -52,6 +62,7 @@ class Detector {
 
       ///Add detected content
       result.add(Detection(
+          originalUrl: originalUrl,
           range: TextRange(start: tag.start, end: tag.end),
           style: detectedStyle));
       previousItem = TextRange(start: tag.start, end: tag.end);

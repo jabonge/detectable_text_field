@@ -77,7 +77,6 @@ TextSpan getDetectedTextSpan({
   bool isUrlShorten = false,
   bool decorateAtSign = false,
 }) {
-  int urlIndex = 0;
   final detector = Detector(
     detectedStyle: decoratedStyle,
     textStyle: basicStyle,
@@ -98,8 +97,8 @@ TextSpan getDetectedTextSpan({
                 if (decoration.style == decoratedStyle) {
                   final text =
                       decoration.range.textInside(detector.shortSource).trim();
-                  if (shortUrlRegex.hasMatch(text)) {
-                    onTap!(detector.originalUrlList[urlIndex++]!);
+                  if (decoration.originalUrl != null) {
+                    onTap!(decoration.originalUrl!);
                   } else {
                     onTap!(text);
                   }
