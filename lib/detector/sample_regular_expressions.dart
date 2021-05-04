@@ -2,7 +2,7 @@
 ///
 /// Supports English, Japanese, Korean, Spanish, Arabic, and Thai
 
-const _symbols = '·・ー_.';
+const _symbols = '·・ー_./';
 
 const _numbers = '0-9０-９';
 
