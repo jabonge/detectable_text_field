@@ -46,7 +46,7 @@ class Detector {
     for (var tag in tags) {
       ///Add undetected content
       String? originalUrl;
-      if (tag.pattern == urlRegex.pattern) {
+      if (shortUrlRegex.hasMatch(tag.input.substring(tag.start, tag.end))) {
         originalUrl = originalUrlList[urlIndex++];
       }
       if (previousItem == null) {
