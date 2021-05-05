@@ -39,14 +39,16 @@ class Detector {
   });
 
   List<Detection> _getSourceDetections(
-      List<RegExpMatch> tags, String copiedText) {
+      List<RegExpMatch> tags, String copiedText,
+      {bool isUrlShorten = false}) {
     TextRange? previousItem;
     int urlIndex = 0;
     final result = <Detection>[];
     for (var tag in tags) {
       ///Add undetected content
       String? originalUrl;
-      if (shortUrlRegex.hasMatch(tag.input.substring(tag.start, tag.end))) {
+      if (isUrlShorten &&
+          shortUrlRegex.hasMatch(tag.input.substring(tag.start, tag.end))) {
         originalUrl = originalUrlList[urlIndex++];
       }
       if (previousItem == null) {
@@ -152,7 +154,8 @@ class Detector {
       return [];
     }
 
-    final sourceDetections = _getSourceDetections(tags, copiedText);
+    final sourceDetections =
+        _getSourceDetections(tags, copiedText, isUrlShorten: isUrlShorten);
     final emojiFilteredResult = _getEmojiFilteredDetections(
         copiedText: copiedText,
         emojiMatches: emojiMatches,
