@@ -48,6 +48,7 @@ class Detector {
       ///Add undetected content
       String? originalUrl;
       if (isUrlShorten &&
+          originalUrlList.length > urlIndex &&
           shortUrlRegex.hasMatch(tag.input.substring(tag.start, tag.end))) {
         originalUrl = originalUrlList[urlIndex++];
       }
